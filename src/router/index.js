@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import BookShelfView from '../views/BookShelfView.vue'
 import BookCityView from '../views/BookCityView.vue'
 import BenefitView from '../views/BenefitView.vue'
+import BookDetail from '../views/BookDetail.vue'
 import MyView from '../views/MyView.vue'
 
 Vue.use(VueRouter)
@@ -23,7 +24,12 @@ const routes = [
   {
     path: '/my',
     component: MyView
-  }
+  },
+  {
+    path: '/book-detail',
+    component: BookDetail
+  },
+
 ]
 
 const router = new VueRouter({

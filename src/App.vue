@@ -37,8 +37,21 @@
 </template>
 
 <style lang="scss">
-body{
-  font-size: 16px;
+body {
+  font-size: 16rem;
+  padding-bottom: 50rem;
+  .van-tabbar {
+    height: 50rem;
+    .van-tabbar-item {
+      span {
+        font-size: 12rem;
+      }
+      img {
+        width: 20rem;
+        height: 20rem;
+      }
+    }
+  }
 }
 </style>
 
@@ -48,14 +61,14 @@ export default {
     return {
       active: 0,
       icon: {
-        bookShelfActive: require("@/assets/icon_book_shelf_select.png"),
-        bookShelfInactive: require("@/assets/icon_book_shelf.png"),
-        bookCityActive: require("@/assets/icon_book_city_select.png"),
-        bookCityInactive: require("@/assets/icon_book_city.png"),
-        benefitActive: require("@/assets/icon_task_select.png"),
-        benefitInactive: require("@/assets/icon_task.png"),
-        myActive: require("@/assets/icon_mine_select.png"),
-        myInactive: require("@/assets/icon_mine.png"),
+        bookShelfActive: "/assets/icon_book_shelf_select.png",
+        bookShelfInactive: "/assets/icon_book_shelf.png",
+        bookCityActive: "/assets/icon_book_city_select.png",
+        bookCityInactive: "/assets/icon_book_city.png",
+        benefitActive: "/assets/icon_task_select.png",
+        benefitInactive: "/assets/icon_task.png",
+        myActive: "/assets/icon_mine_select.png",
+        myInactive: "/assets/icon_mine.png",
       },
     };
   },
