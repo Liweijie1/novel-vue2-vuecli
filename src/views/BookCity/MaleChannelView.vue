@@ -1,11 +1,5 @@
 <template>
-  <div class="bookCity">
-    <header>
-      <div class="man">男频</div>
-      <div class="woman">女频</div>
-      <input type="text" />
-    </header>
-
+  <div class="male">
     <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
       <van-swipe-item>1</van-swipe-item>
       <van-swipe-item>2</van-swipe-item>
@@ -13,7 +7,7 @@
 
     <FourTypes></FourTypes>
 
-     <TabBar>
+    <TabBar>
       <template #left>畅销佳作</template>
       <template #right>更多 ></template>
     </TabBar>
@@ -51,7 +45,7 @@ export default {
   },
   created() {
     getBookCity().then((res) => {
-      this.setBookCityData(res.data.list)
+      this.setBookCityData(res.data.list);
     });
   },
 };
@@ -59,26 +53,6 @@ export default {
 
 <style lang="scss" scoped>
 .bookCity {
-  margin-bottom: 60px;
-  header {
-    height: 50rem;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    .man,
-    .woman {
-      font-size: 18rem;
-      font-weight: 600;
-    }
-
-    input {
-      width: 226rem;
-      height: 30rem;
-      border-radius: 36rem;
-      border: none;
-      box-shadow: 0rem 0rem 3rem rgb(169, 169, 169);
-    }
-  }
   .my-swipe .van-swipe-item {
     color: #fff;
     font-size: 20rem;
