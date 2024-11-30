@@ -10,11 +10,8 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 export default {
-  computed: {
-    ...mapGetters(["novelExpress"]),
-  },
+  props:["novelExpress"],
   created() {
     console.log(123,this.novelExpress);
   },

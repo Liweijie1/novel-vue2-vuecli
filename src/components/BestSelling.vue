@@ -1,7 +1,7 @@
 <template>
   <div class="bestSelling">
     <BestSellingItem
-      v-for="item in bestSelling.splice(0,4)"
+      v-for="item in bestSelling"
       :key="item.id"
       :bookId="item.id"
       :img="item.cover"
@@ -12,12 +12,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import BestSellingItem from "@/components/BestSellingItem.vue";
 export default {
-  computed: {
-    ...mapGetters(["bestSelling"]),
-  },
+  props:["bestSelling"],
   components: {
     BestSellingItem,
   },

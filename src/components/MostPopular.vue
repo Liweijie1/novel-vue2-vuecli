@@ -19,12 +19,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import MostPopularItem from "@/components/MostPopularItem.vue";
 export default {
-  computed: {
-    ...mapGetters(["mostPopular"]),
-  },
+ props:["mostPopular"],
   components: {
     MostPopularItem,
   },

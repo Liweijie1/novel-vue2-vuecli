@@ -12,21 +12,20 @@
       <template #right>更多 ></template>
     </TabBar>
 
-    <BestSelling></BestSelling>
+    <BestSelling :bestSelling="bestSelling"></BestSelling>
 
-    <MostPopular></MostPopular>
+    <MostPopular :mostPopular="mostPopular"></MostPopular>
 
     <TabBar>
       <template #left>小说速递</template>
       <template #right>更多 ></template>
     </TabBar>
 
-    <NovelExpress></NovelExpress>
+    <NovelExpress :novelExpress="novelExpress"></NovelExpress>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
 import TabBar from "@/components/TabBar.vue";
 import FourTypes from "@/components/FourTypes.vue";
 import BestSelling from "@/components/BestSelling.vue";
@@ -36,7 +35,10 @@ import { getBookCity } from "@/api/index.js";
 export default {
   data() {
     return {
-      getBookCityData: [],
+      bookCityData: [],
+      bestSelling: [],
+      mostPopular: [],
+      novelExpress: [],
     };
   },
   components: {
@@ -46,15 +48,12 @@ export default {
     MostPopular,
     NovelExpress,
   },
-  computed: {
-    ...mapState(["bookCityData"]),
-  },
-  methods: {
-    ...mapMutations(["setBookCityData"]),
-  },
   created() {
     getBookCity().then((res) => {
-      this.setBookCityData(res.data.list);
+      this.bookCityData = res.data.list;
+      this.bestSelling = this.bookCityData.slice(0,4)
+      this.mostPopular = this.bookCityData.slice(5,13)
+      this.novelExpress = this.bookCityData.slice(13,17)
     });
   },
 };
