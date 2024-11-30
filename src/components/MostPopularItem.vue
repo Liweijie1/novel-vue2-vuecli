@@ -1,5 +1,5 @@
 <template>
-  <div class="mostPopularItem">
+  <div class="mostPopularItem" @click="gotoBookDetail">
     <div class="right">
       <van-image :src="img" lazy-load  fit="cover"/>
     </div>
@@ -18,6 +18,16 @@ import { Lazyload } from 'vant';
 Vue.use(Lazyload);
 export default {
   props: ["bookId", "img", "title", "author"],
+  methods: {
+    gotoBookDetail() {
+      this.$router.push({
+        path: "/book-detail",
+        query: {
+          bookId: this.bookId,
+        },
+      });
+    },
+  },
 };
 </script>
 

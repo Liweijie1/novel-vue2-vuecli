@@ -1,7 +1,7 @@
 <template>
   <div class="bestSelling">
     <BestSellingItem
-      v-for="item in bestSelling"
+      v-for="item in bestSelling.splice(0,4)"
       :key="item.id"
       :bookId="item.id"
       :img="item.cover"

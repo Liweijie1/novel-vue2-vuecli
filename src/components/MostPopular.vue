@@ -28,7 +28,8 @@ export default {
   components: {
     MostPopularItem,
   },
-  created() {},
+  created() {
+  },
 };
 </script>
 
@@ -39,6 +40,7 @@ export default {
   border-radius: 5rem;
   margin: 17rem auto;
   overflow: hidden;
+  border: 1px solid #ECECEC;
   .top {
     width: 100%;
     height: 56rem;

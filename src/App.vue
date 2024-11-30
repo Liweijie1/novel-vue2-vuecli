@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view />
+    <transition name="xxx">
+      <router-view class="router" />
+    </transition>
     <van-tabbar v-model="active" route>
       <van-tabbar-item to="/book-shelf">
         <span>书架</span>
@@ -51,6 +53,23 @@ body {
         height: 20rem;
       }
     }
+  }
+
+  .xxx-enter-active,
+  .xxx-leave-active {
+    transition: all 0.5s;
+  }
+
+  .xxx-enter {
+    transform: translateX(100%);
+  }
+  .xxx-enter-to,
+  .xxx-leave {
+    transform: translateX(0%);
+  }
+
+  .xxx-leave-to {
+    transform: translateX(-100%);
   }
 }
 </style>

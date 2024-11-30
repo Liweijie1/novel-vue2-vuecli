@@ -9,13 +9,17 @@ export default new Vuex.Store({
     bookCityData:[],
     bestSelling:[],
     mostPopular:[],
+    novelExpress:[],
   },
   getters: {
     bestSelling(state){
-      return state.bookCityData.slice(0,4)
+      return state.bookCityData.slice(0,5)
     },
     mostPopular(state){
-      return state.bookCityData.slice(4,12)
+      return state.bookCityData.slice(5,13)
+    },
+    novelExpress(state){
+      return state.bookCityData.slice(13,17)
     },
 
   },

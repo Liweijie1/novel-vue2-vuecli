@@ -7,15 +7,14 @@
       </nav>
       <input type="text" />
     </header>
-    <router-view />
+    <transition name="xxx">
+      <router-view class="router" />
+    </transition>
   </div>
 </template>
 
 <script>
-
-export default {
-  
-};
+export default {};
 </script>
 
 <style lang="scss" scoped>
@@ -39,6 +38,22 @@ export default {
       border: none;
       box-shadow: 0rem 0rem 3rem rgb(169, 169, 169);
     }
+  }
+  .xxx-enter-active,
+  .xxx-leave-active {
+    transition: all 0.5s;
+  }
+
+  .xxx-enter {
+    transform: translateX(100%);
+  }
+  .xxx-enter-to,
+  .xxx-leave {
+    transform: translateX(0%);
+  }
+
+  .xxx-leave-to {
+    transform: translateX(-100%);
   }
 }
 </style>

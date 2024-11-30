@@ -15,6 +15,13 @@
     <BestSelling></BestSelling>
 
     <MostPopular></MostPopular>
+
+    <TabBar>
+      <template #left>小说速递</template>
+      <template #right>更多 ></template>
+    </TabBar>
+
+    <NovelExpress></NovelExpress>
   </div>
 </template>
 
@@ -24,6 +31,7 @@ import TabBar from "@/components/TabBar.vue";
 import FourTypes from "@/components/FourTypes.vue";
 import BestSelling from "@/components/BestSelling.vue";
 import MostPopular from "@/components/MostPopular.vue";
+import NovelExpress from "@/components/NovelExpress.vue";
 import { getBookCity } from "@/api/index.js";
 export default {
   data() {
@@ -36,6 +44,7 @@ export default {
     FourTypes,
     BestSelling,
     MostPopular,
+    NovelExpress,
   },
   computed: {
     ...mapState(["bookCityData"]),
