@@ -19,6 +19,7 @@ export default {
     BestSellingItem,
   },
   created() {},
+  
 };
 </script>
 

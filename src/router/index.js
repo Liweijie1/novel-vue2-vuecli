@@ -7,41 +7,63 @@ import MaleChannelView from '../views/BookCity/MaleChannelView.vue'
 import BenefitView from '../views/BenefitView.vue'
 import BookDetail from '../views/BookDetail.vue'
 import MyView from '../views/MyView.vue'
+import NovelContentView from '../views/NovelContentView.vue'
+import ContentsView from '../views/ContentsView.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path:"/",
-    redirect :'/book-shelf'
+    path: "/",
+    redirect: '/book-shelf',
+    meta: { showNav: true }
   },
   {
-    path:"/book-city",
-    redirect :'/male-channel'
+    path: "/book-city",
+    redirect: '/male-channel',
+    meta: { showNav: true }
   },
   {
     path: '/book-shelf',
-    component: BookShelfView
+    component: BookShelfView,
+    meta: { showNav: true }
   },
   {
     path: '/book-city',
     component: BookCityView,
-    children:[
-      { path: '/female-channel', component : FemaleChannelView},
-      { path: '/male-channel', component : MaleChannelView},
-    ]
+    meta: { showNav: true },
+    children: [
+      {
+        path: '/female-channel', component: FemaleChannelView,
+        meta: { showNav: true }
+      },
+      {
+        path: '/male-channel', component: MaleChannelView,
+        meta: { showNav: true }
+      },
+    ],
   },
   {
     path: '/benefit',
-    component: BenefitView
+    component: BenefitView,
+    meta: { showNav: true }
   },
   {
     path: '/my',
-    component: MyView
+    component: MyView,
+    meta: { showNav: true }
   },
   {
     path: '/book-detail',
     component: BookDetail
+  },
+  {
+    path: '/novel-content',
+    component: NovelContentView
+  },
+  {
+    path: '/novel-contents',
+    component: ContentsView
   },
 ]
 

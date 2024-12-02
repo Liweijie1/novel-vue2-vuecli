@@ -14,7 +14,7 @@
 
     <BestSelling :bestSelling="bestSelling"></BestSelling>
 
-    <MostPopular :mostPopular="mostPopular"></MostPopular>
+    <MostPopular :mostPopular="mostPopular" :male="male"></MostPopular>
 
     <TabBar>
       <template #left>小说速递</template>
@@ -22,6 +22,36 @@
     </TabBar>
 
     <NovelExpress :novelExpress="novelExpress"></NovelExpress>
+
+    <TabBar>
+      <template #left>极品好书</template>
+      <template #right>更多 ></template>
+    </TabBar>
+
+    <ExcellentBookItem
+      v-for="item in excellentBookItem"
+      :key="item.id"
+      :bookId="item.id"
+      :img="item.cover"
+      :title="item.title"
+      :content="item.content"
+      :author="item.author"
+    ></ExcellentBookItem>
+
+    <TabBar>
+      <template #left>大神佳作</template>
+      <template #right>更多 ></template>
+    </TabBar>
+
+    <ExcellentBookItem
+      v-for="item in excellentBookItemTwo"
+      :key="item.id"
+      :bookId="item.id"
+      :img="item.cover"
+      :title="item.title"
+      :content="item.content"
+      :author="item.author"
+    ></ExcellentBookItem>
   </div>
 </template>
 
@@ -31,14 +61,18 @@ import FourTypes from "@/components/FourTypes.vue";
 import BestSelling from "@/components/BestSelling.vue";
 import MostPopular from "@/components/MostPopular.vue";
 import NovelExpress from "@/components/NovelExpress.vue";
+import ExcellentBookItem from "@/components/ExcellentBookItem.vue";
 import { getBookCity } from "@/api/index.js";
 export default {
   data() {
     return {
+      male:true,
       bookCityData: [],
       bestSelling: [],
       mostPopular: [],
       novelExpress: [],
+      excellentBookItem: [],
+      excellentBookItemTwo: [],
     };
   },
   components: {
@@ -47,20 +81,23 @@ export default {
     BestSelling,
     MostPopular,
     NovelExpress,
+    ExcellentBookItem,
   },
   created() {
     getBookCity().then((res) => {
       this.bookCityData = res.data.list;
-      this.bestSelling = this.bookCityData.slice(0,4)
-      this.mostPopular = this.bookCityData.slice(5,13)
-      this.novelExpress = this.bookCityData.slice(13,17)
+      this.bestSelling = this.bookCityData.slice(0, 4);
+      this.mostPopular = this.bookCityData.slice(5, 13);
+      this.novelExpress = this.bookCityData.slice(13, 17);
+      this.excellentBookItem = this.bookCityData.slice(17, 19);
+      this.excellentBookItemTwo = this.bookCityData.slice(19, 22);
     });
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.bookCity {
+.male {
   .my-swipe .van-swipe-item {
     color: #fff;
     font-size: 20rem;

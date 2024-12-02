@@ -1,5 +1,5 @@
 <template>
-  <div class="mostPopular">
+  <div class="mostPopular" :class="{ male : male }">
     <div class="top">
       <div class="most">最受欢迎</div>
       <div class="line"></div>
@@ -21,12 +21,11 @@
 <script>
 import MostPopularItem from "@/components/MostPopularItem.vue";
 export default {
- props:["mostPopular"],
+  props: ["mostPopular", "male"],
   components: {
     MostPopularItem,
   },
-  created() {
-  },
+  created() {},
 };
 </script>
 
@@ -37,13 +36,14 @@ export default {
   border-radius: 5rem;
   margin: 17rem auto;
   overflow: hidden;
-  border: 1px solid #ECECEC;
+  border: 1px solid #ececec;
+
   .top {
     width: 100%;
     height: 56rem;
     color: white;
-    background: linear-gradient(to right, #7cacff, #4589ff);
     position: relative;
+    background: linear-gradient(to right, #FF8CA7,#FB4E76);
     .most {
       position: absolute;
       top: 16rem;
@@ -65,11 +65,17 @@ export default {
       font-size: 12rem;
     }
   }
-  .bottom{
+  .bottom {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+  }
+
+  &.male {
+    .top {
+      background: linear-gradient(to right, #7cacff, #4589ff);
+    }
   }
 }
 </style>

@@ -3,7 +3,7 @@
     <transition name="xxx">
       <router-view class="router" />
     </transition>
-    <van-tabbar v-model="active" route>
+    <van-tabbar v-model="active" route  v-if="$route.meta.showNav">
       <van-tabbar-item to="/book-shelf">
         <span>书架</span>
         <template #icon="props">
@@ -41,7 +41,6 @@
 <style lang="scss">
 body {
   font-size: 16rem;
-  padding-bottom: 50rem;
   .van-tabbar {
     height: 50rem;
     .van-tabbar-item {

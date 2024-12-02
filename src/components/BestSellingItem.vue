@@ -1,6 +1,18 @@
 <template>
-  <div class="bestSellingItem" lazy-load :bookId="bookId" @click="gotoBookDetail">
-    <van-image fit="cover" width="78rem" height="110rem" :src="img" />
+  <div
+    class="bestSellingItem"
+    lazy-load
+    :bookId="bookId"
+    @click="gotoBookDetail"
+  >
+    <van-image
+      fit="cover"
+      radius="5rem"
+      width="78rem"
+      height="110rem"
+      :src="imgUrl"
+      @error="handleError"
+    />
     <div class="bookName van-ellipsis">{{ title }}</div>
     <div class="author van-ellipsis">{{ author }}</div>
   </div>
@@ -9,6 +21,12 @@
 <script>
 export default {
   props: ["bookId", "img", "title", "author"],
+  data(){
+    return{
+      imgUrl: this.img, 
+      defaultImg: "/assets/default.png" 
+    }
+  },
   methods: {
     gotoBookDetail() {
       this.$router.push({
@@ -17,6 +35,9 @@ export default {
           bookId: this.bookId,
         },
       });
+    },
+    handleError() {
+      this.imgUrl = this.defaultImg;
     },
   },
 };
