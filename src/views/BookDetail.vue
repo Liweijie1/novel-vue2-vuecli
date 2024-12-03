@@ -44,6 +44,10 @@
           </div>
         </div>
       </div>
+
+      <div class="bar"></div>
+
+      
     </section>
   </div>
 </template>
@@ -115,12 +119,9 @@ export default {
       } else {
         this.bookFirstChapterId = res.data.data.catalog[1].uuid;
       }
-
       getChapterContent(this.$route.query.bookId, this.bookFirstChapterId).then(
         (res) => {
           this.bookFirstChapterContent = res.data.data.content;
-          console.log(this.$route.query.bookId, this.bookFirstChapterId);
-          console.log(this.bookFirstChapterContent);
         }
       );
     });

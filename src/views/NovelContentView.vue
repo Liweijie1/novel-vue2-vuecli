@@ -1,44 +1,69 @@
 <template>
-  <div class="novelContent">novelContent</div>
+  <div class="novelContent">
+    <div class="top" v-if="isShow">
+      <van-image
+        src="/assets/back_lanse.png"
+        @click="$router.back()"
+      />
+      <span></span>
+    </div>
+    <div class="content" v-html="currentCatalogContent" @click="isShow = !isShow"></div>
+  </div>
 </template>
 
 <script>
-import { getBookInfo, getChapterContent } from "@/api/index.js";
+import { getChapterContent } from "@/api/index.js";
 export default {
-  data(){
+  data() {
     return {
-      book:null,
-      bookCoverImage:null,
-      bookTitle:null,
-      bookAuthor:null,
-      bookCatalogNum:null,
-      bookFirstChapterId:null,
-      bookSecondChapterId:null,
-      bookThirdChapterId:null,
-    }
+      isShow:false,
+      currentCatalogContent: null,
+    };
   },
-  created(){
-    getBookInfo(this.$route.query.bookId).then((res) => {
-      this.book = res.data.data.book;
-      this.bookCoverImage = this.book.coverImage;
-      this.bookTitle = this.book.title;
-      this.bookAuthor = this.book.author;
-      this.bookCatalogNum = res.data.data.catalog.length + 1;
-      this.bookFirstChapterId = res.data.data.catalog[0].uuid;
-      this.bookSecondChapterId = res.data.data.catalog[1].uuid;
-      this.bookThirdChapterId = res.data.data.catalog[2].uuid;
-      
-      getChapterContent(this.$route.query.bookId, this.bookFirstChapterId).then(
-        (res) => {
-          this.bookFirstChapterContent = res.data.data.content;
-        }
-      );
-
+  created() {
+    getChapterContent(
+      this.$route.query.bookId,
+      this.$route.query.catalogId
+    ).then((res) => {
+      if (res.data.successful) {
+        this.currentCatalogContent = res.data.data.content;
+      } else {
+        this.currentCatalogContent = "<h1>付费章节,请充值</h1>";
+      }
     });
-  }
-}
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="less">
+.novelContent {
+  width: 100vw;
+  position: relative;
+  .top{
+    width: 100vw;
+    height: 55rem;
+    background: white;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    .van-image{
+      width: 8rem;
+      height: 16rem;
+      margin-left: 24rem;
+    }
+  }
+  .content {
+    padding-top: 55rem;
+    background: #f7f3f7;
+    h1 {
+      font-size: 24rem;
+      text-align: center;
+    }
+    p {
+      color: #313431;
+      font-size: 21rem;
+      text-indent: 2em;
+    }
+  }
+}
 </style>
