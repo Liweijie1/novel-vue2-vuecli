@@ -6,15 +6,20 @@
     ></div>
 
     <header>
-      <img @click="$router.back()" src="/assets/icon_back_white.png" />
+      <van-image @click="$router.back()" src="/assets/icon_back_white.png" />
     </header>
 
     <section class="info">
-      <van-image class="left" fit="cover" :src="bookCoverImage" />
+      <van-image
+        class="left"
+        fit="cover"
+        :src="bookCoverImage"
+        @error="handleError"
+      />
       <div class="right">
-        <div class="bookTitle">{{ bookTitle }}</div>
-        <div class="bookAuthor">作者：{{ bookAuthor }}</div>
-        <div class="bookTotalCount">{{ bookTotalCount }}万字</div>
+        <div class="bookTitle van-ellipsis">{{ bookTitle }}</div>
+        <div class="bookAuthor van-ellipsis">作者：{{ bookAuthor }}</div>
+        <div class="bookTotalCount van-ellipsis">{{ bookTotalCount }}万字</div>
       </div>
     </section>
 
@@ -46,9 +51,19 @@
       </div>
 
       <div class="bar"></div>
-
-      
     </section>
+
+    <footer>
+      <div class="join" @click="joinHandle">
+        <van-image src="/assets/icon_detail_add.png" />
+        <span v-if="!isInShelf">加入书架</span>
+        <span v-else>已加入</span>
+      </div>
+      <div class="read" @click="readHandleTwo">
+        <van-image src="/assets/icon_detail_read.png" />
+        <span>继续阅读</span>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -69,6 +84,10 @@ export default {
       bookFirstChapterContent: null,
       read: "抢先阅读 >",
       readClick: false,
+      token: JSON.parse(localStorage.getItem("token")),
+      shelf: JSON.parse(localStorage.getItem("shelf")),
+      isInShelf: false,
+      defaultImg: "/assets/default.png",
     };
   },
   computed: {
@@ -91,15 +110,57 @@ export default {
           path: "/novel-content",
           query: {
             bookId: this.$route.query.bookId,
+            catalogId: this.bookFirstChapterId,
           },
         });
       }
+    },
+    readHandleTwo() {
+      this.$router.push({
+        path: "/novel-content",
+        query: {
+          bookId: this.$route.query.bookId,
+          catalogId: this.bookFirstChapterId,
+        },
+      });
     },
     gotoContentsView() {
       this.$router.push({
         path: "/novel-contents",
         query: { bookId: this.$route.query.bookId },
       });
+    },
+    joinHandle() {
+      this.shelf = JSON.parse(localStorage.getItem("shelf"));
+      const userShelf = this.shelf.find((obj) => {
+        return this.token in obj;
+      });
+      if (!userShelf[this.token].includes(this.$route.query.bookId)) {
+        userShelf[this.token].push(this.$route.query.bookId);
+      } else if (userShelf) {
+        userShelf[this.token] = userShelf[this.token].filter(
+          (item) => item !== this.$route.query.bookId
+        );
+      }
+      localStorage.setItem("shelf", JSON.stringify(this.shelf));
+    },
+    handleError() {
+      this.bookCoverImage = this.defaultImg;
+    },
+  },
+  watch: {
+    shelf() {
+      const userShelf = this.shelf.find((obj) => {
+        return this.token in obj;
+      });
+      if (
+        userShelf &&
+        !userShelf[this.token].includes(this.$route.query.bookId)
+      ) {
+        this.isInShelf = false;
+      } else {
+        this.isInShelf = true;
+      }
     },
   },
   created() {
@@ -121,20 +182,34 @@ export default {
       }
       getChapterContent(this.$route.query.bookId, this.bookFirstChapterId).then(
         (res) => {
-          this.bookFirstChapterContent = res.data.data.content;
+          this.bookFirstChapterContent = res.data.data?.content;
         }
       );
     });
 
     getBookDetail(this.$route.query.bookId).then((res) => {
-      this.bookContent = res.data.feed.entry.content.text;
+      this.bookContent = res.data?.feed?.entry?.content?.text;
     });
+
+    const userShelf = this.shelf.find((obj) => {
+      return this.token in obj;
+    });
+    if (
+      userShelf &&
+      !userShelf[this.token].includes(this.$route.query.bookId)
+    ) {
+      this.isInShelf = false;
+    } else {
+      this.isInShelf = true;
+    }
   },
 };
 </script>
 
 <style lang="scss">
 .bookDetail {
+  padding-bottom: 50rem;
+  position: relative;
   .bg {
     width: 100vw;
     height: 100vh;
@@ -148,7 +223,7 @@ export default {
 
   header {
     padding: 20rem;
-    img {
+    .van-image {
       width: 11rem;
       height: 17rem;
     }
@@ -259,6 +334,31 @@ export default {
           }
         }
       }
+    }
+  }
+
+  footer {
+    width: 100vw;
+    height: 50rem;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    .join,
+    .read {
+      width: 50%;
+      height: 100%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .van-image {
+        width: 20rem;
+        height: 20rem;
+        margin-right: 10rem;
+      }
+    }
+    .read {
+      background: #fcdd22;
     }
   }
 }

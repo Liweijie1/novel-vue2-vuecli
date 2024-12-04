@@ -9,6 +9,7 @@ import BookDetail from '../views/BookDetail.vue'
 import MyView from '../views/MyView.vue'
 import NovelContentView from '../views/NovelContentView.vue'
 import ContentsView from '../views/ContentsView.vue'
+import LoginView from '../views/LoginView.vue'
 
 Vue.use(VueRouter)
 
@@ -64,6 +65,10 @@ const routes = [
   {
     path: '/novel-contents',
     component: ContentsView
+  },
+  {
+    path: '/login',
+    component: LoginView
   },
 ]
 

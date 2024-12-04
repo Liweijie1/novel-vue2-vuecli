@@ -3,13 +3,13 @@
     <div class="set">
       <van-image src="/assets/icon_mine_setting.png" />
     </div>
-    <div class="user">
+    <div class="user" @click="gotoLogin">
       <div class="top">
         <div class="left">
           <van-image src="/assets/icon_mine_avater.png" />
         </div>
         <div class="right">
-          <div class="userName">游客_873998</div>
+          <div class="userName">{{token}}</div>
           <div class="userId">ID 873998</div>
         </div>
       </div>
@@ -19,7 +19,20 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      token: JSON.parse(localStorage.getItem("token")),
+    }
+  },
+  methods:{
+    gotoLogin(){
+      this.$router.push({
+        path:"/login"
+      })
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>

@@ -3,7 +3,7 @@
     <transition name="xxx">
       <router-view class="router" />
     </transition>
-    <van-tabbar v-model="active" route  v-if="$route.meta.showNav">
+    <van-tabbar v-model="active" route v-if="$route.meta.showNav">
       <van-tabbar-item to="/book-shelf">
         <span>书架</span>
         <template #icon="props">
@@ -88,7 +88,22 @@ export default {
         myActive: "/assets/icon_mine_select.png",
         myInactive: "/assets/icon_mine.png",
       },
+      users: JSON.parse(localStorage.getItem("users")),
+      token: JSON.parse(localStorage.getItem("token")),
+      shelf: JSON.parse(localStorage.getItem("shelf")),
     };
+  },
+
+  created() {
+    if (!this.users) {
+      localStorage.setItem("users",JSON.stringify(["游客_873998"]));
+    }
+    if (!this.token) {
+      localStorage.setItem("token",JSON.stringify("游客_873998"));
+    }
+    if (!this.shelf) {
+      localStorage.setItem("shelf",JSON.stringify([{"游客_873998":["bd_750bc41317254264ad384f5234c5bb78_4","ts_02fa18a19aef4d86a890ab864c40493e_4"]}]));
+    }
   },
 };
 </script>

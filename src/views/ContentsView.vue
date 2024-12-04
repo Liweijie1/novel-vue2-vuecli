@@ -27,12 +27,20 @@
     </van-popup>
     <div class="content" v-if="catalog.length != 0">
       <ul v-if="isSelect">
-        <li v-for="number in currentRange" :key="number" @click="gotoContentsView(catalog[number - 1].secId)">
+        <li
+          v-for="number in currentRange"
+          :key="number"
+          @click="gotoContentsView(catalog[number - 1].secId)"
+        >
           {{ catalog[number - 1].title }}
         </li>
       </ul>
       <ul v-else>
-        <li v-for="number in defaultRange" :key="number" @click="gotoContentsView(catalog[number - 1].secId)">
+        <li
+          v-for="number in defaultRange"
+          :key="number"
+          @click="gotoContentsView(catalog[number - 1].secId)"
+        >
           {{ catalog[number - 1].title }}
         </li>
       </ul>
@@ -72,8 +80,16 @@ export default {
       return ranges;
     },
     defaultRange() {
-      return Array.from({ length: 100 }, (_, index) => index + 1);
+      return Array.from(
+        { length: this.ranges[0].end },
+        (_, index) => index + 1
+      );
     },
+  },
+  watch:{
+    ranges(){
+      this.activeRangeText = "1-" + this.ranges[0].end + "V"
+    }
   },
   methods: {
     showPopup() {
@@ -89,23 +105,25 @@ export default {
       this.activeRangeText = `${range.start}-${range.end} V`;
       this.selectedRangeIndex = this.ranges.indexOf(range);
     },
-    gotoContentsView(id){
+    gotoContentsView(id) {
       this.$router.push({
-        path:"/novel-content",
-        query:{
-          bookId : this.$route.query.bookId,
-          catalogId : id,
-        }
-      })
-// getChapterContent(this.$route.query.bookId,id)
-    }
+        path: "/novel-content",
+        query: {
+          bookId: this.$route.query.bookId,
+          catalogId: id,
+        },
+      });
+    },
   },
   created() {
     getBookInfo(this.$route.query.bookId).then((res) => {
       this.catalog = res.data.data.catalog;
       this.catalogTotal = this.catalog.length;
+      console.log(res.data.data);
     });
+    
   },
+  
 };
 </script>
 
@@ -142,7 +160,7 @@ export default {
         line-height: 30rem;
         text-align: center;
         &.selected {
-          background-color: #FCDD22;
+          background-color: #fcdd22;
           color: white;
         }
       }

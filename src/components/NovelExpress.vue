@@ -8,7 +8,7 @@
       <van-image
         fit="cover"
         radius="5rem"
-        :src="topImage"
+        :src="novelExpress[0].cover"
         @error="handleError(0)"
       />
       <div class="right">
@@ -33,7 +33,7 @@
         <van-image
           fit="cover"
           radius="5rem"
-          :src="bottomArr[index].imageSrc"
+          :src="bottomArr[index].cover"
           @error="handleError(index + 1)"
         />
         <div class="title van-ellipsis">
@@ -71,15 +71,12 @@ export default {
     },
     handleError(index) {
       let item = index === 0 ? this.novelExpress[0] : this.bottomArr[index - 1];
-      item.imageSrc = this.defaultImg;
+      item.cover = this.defaultImg;
     },
   },
   watch: {
     novelExpress() {
-      this.bottomArr = this.novelExpress.slice(1, 4).map(item => ({
-        ...item,
-        imageSrc: item.cover
-      }));
+      this.bottomArr = this.novelExpress.slice(1, 4);
       if (this.novelExpress.length > 0) {
         this.topImage = this.novelExpress[0].cover;
       }
