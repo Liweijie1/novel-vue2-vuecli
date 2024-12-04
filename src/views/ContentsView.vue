@@ -39,9 +39,19 @@
         <li
           v-for="number in defaultRange"
           :key="number"
-          @click="gotoContentsView(catalog[number - 1].secId)"
+          @click="
+            gotoContentsView(
+              catalog[number - 1].secId,
+              catalog[number - 1].needPay
+            )
+          "
         >
           {{ catalog[number - 1].title }}
+          <van-image
+            class="closeread"
+            src="/assets/closeread.png"
+            v-if="catalog[number - 1].needPay"
+          />
         </li>
       </ul>
     </div>
@@ -49,6 +59,7 @@
 </template>
 
 <script>
+import { Toast } from 'vant';
 import { getBookInfo } from "@/api/index.js";
 export default {
   data() {
@@ -86,10 +97,10 @@ export default {
       );
     },
   },
-  watch:{
-    ranges(){
-      this.activeRangeText = "1-" + this.ranges[0].end + "V"
-    }
+  watch: {
+    ranges() {
+      this.activeRangeText = "1-" + this.ranges[0].end + "V";
+    },
   },
   methods: {
     showPopup() {
@@ -105,25 +116,26 @@ export default {
       this.activeRangeText = `${range.start}-${range.end} V`;
       this.selectedRangeIndex = this.ranges.indexOf(range);
     },
-    gotoContentsView(id) {
-      this.$router.push({
-        path: "/novel-content",
-        query: {
-          bookId: this.$route.query.bookId,
-          catalogId: id,
-        },
-      });
+    gotoContentsView(id, needPay) {
+      if (needPay) {
+        Toast('付费内容,请先充值');
+      } else {
+        this.$router.push({
+          path: "/novel-content",
+          query: {
+            bookId: this.$route.query.bookId,
+            catalogId: id,
+          },
+        });
+      }
     },
   },
   created() {
     getBookInfo(this.$route.query.bookId).then((res) => {
       this.catalog = res.data.data.catalog;
       this.catalogTotal = this.catalog.length;
-      console.log(res.data.data);
     });
-    
   },
-  
 };
 </script>
 
@@ -173,6 +185,13 @@ export default {
         font-size: 12rem;
         margin-top: 20rem;
         padding-left: 12rem;
+        position: relative;
+        .closeread {
+          width: 12rem;
+          height: 14rem;
+          position: absolute;
+          right: 10rem;
+        }
       }
     }
   }

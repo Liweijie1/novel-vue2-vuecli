@@ -11,8 +11,8 @@
     ></div>
     <div class="bottom" v-if="isTopAndBottonShow">
       <div class="text">
-        <span>上一章</span>
-        <span>下一章</span>
+        <span @click="prevItem">上一章</span>
+        <span @click="nextItem">下一章</span>
       </div>
       <ul class="btn">
         <li>
@@ -86,12 +86,21 @@
         </ul>
         <ul v-else>
           <li
-            class="van-ellipsis"
             v-for="number in defaultRange"
             :key="number"
-            @click="gotoContentsView(catalog[number - 1].secId)"
+            @click="
+              gotoContentsView(
+                catalog[number - 1].secId,
+                catalog[number - 1].needPay
+              )
+            "
           >
             {{ catalog[number - 1].title }}
+            <van-image
+              class="closeread"
+              src="/assets/closeread.png"
+              v-if="catalog[number - 1].needPay"
+            />
           </li>
         </ul>
       </div>
@@ -100,6 +109,7 @@
 </template>
 
 <script>
+import { Toast } from "vant";
 import { getBookInfo, getChapterContent } from "@/api/index.js";
 export default {
   data() {
@@ -126,6 +136,8 @@ export default {
       isSelect: false,
       activeRangeText: "1-100 V",
       selectedRangeIndex: 0,
+      catalogIdList: [],
+      currentCatalogIdIndex: 0,
     };
   },
   computed: {
@@ -153,6 +165,15 @@ export default {
     ranges() {
       this.activeRangeText = "1-" + this.ranges[0].end + "V";
     },
+    catalogId() {
+      getChapterContent(this.bookId, this.catalogId).then((res) => {
+        if (res.data.successful) {
+          this.currentCatalogContent = res.data.data.content;
+        } else {
+          this.currentCatalogContent = "<h1>付费章节,请充值</h1>";
+        }
+      });
+    },
   },
   methods: {
     showPopup() {
@@ -175,6 +196,32 @@ export default {
     handleError() {
       this.bookCoverImage = this.defaultImg;
     },
+    gotoContentsView(id, needPay) {
+      if (needPay) {
+        Toast("付费内容,请先充值");
+      } else {
+        this.catalogId = id;
+        this.isLeftShow = false;
+      }
+    },
+    prevItem() {
+      this.currentCatalogIdIndex = this.catalogIdList.indexOf(this.catalogId);
+      if (this.currentCatalogIdIndex > 0) {
+        this.currentCatalogIdIndex--;
+        this.catalogId = this.catalogIdList[this.currentCatalogIdIndex];
+      } else {
+        Toast("没有上一章了");
+      }
+    },
+    nextItem() {
+      this.currentCatalogIdIndex = this.catalogIdList.indexOf(this.catalogId);
+      if (this.currentCatalogIdIndex < this.catalogIdList.length - 1) {
+        this.currentCatalogIdIndex++;
+        this.catalogId = this.catalogIdList[this.currentCatalogIdIndex];
+      } else {
+        Toast("付费内容,请先充值");
+      }
+    },
   },
   created() {
     getChapterContent(this.bookId, this.catalogId).then((res) => {
@@ -193,6 +240,7 @@ export default {
       this.bookCatalogNum = res.data.data.catalog.length + 1;
       this.catalog = res.data.data.catalog;
       this.catalogTotal = this.catalog.length;
+      this.catalogIdList = this.catalog.map((o) => o.secId);
     });
   },
 };
@@ -313,13 +361,20 @@ export default {
     }
 
     .contents {
-    ul {
-      li {
-        font-size: 14rem;
-        padding: 15rem 10rem;
+      ul {
+        li {
+          font-size: 14rem;
+          padding: 15rem 10rem;
+          position: relative;
+          .closeread {
+            width: 12rem;
+            height: 14rem;
+            position: absolute;
+            right: 10rem;
+          }
+        }
       }
     }
-  }
 
     .van-popup {
       .catalogListBox {
