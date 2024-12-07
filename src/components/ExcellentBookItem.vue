@@ -29,6 +29,7 @@ export default {
       defaultImg: "/assets/default.png",
     };
   },
+  
   methods: {
     gotoBookDetail() {
       this.$router.push({

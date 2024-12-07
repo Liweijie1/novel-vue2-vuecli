@@ -8,6 +8,14 @@ const getBookInfo = (source_uuid) => axios.get(`https://apis.netstart.cn/yunyued
 // 书籍详情
 const getBookDetail = (source_uuid) => axios.get(`https://apis.netstart.cn/yunyuedu/book/getsub.json?id=${source_uuid}`);
 // 章节内容
-const getChapterContent = (source_uuid,content_uuid) => axios.get(`https://apis.netstart.cn/yunyuedu/reader/book/content.json?source_uuid=${source_uuid}&content_uuid=${content_uuid}`);
+const getChapterContent = (source_uuid, content_uuid) => axios.get(`https://apis.netstart.cn/yunyuedu/reader/book/content.json?source_uuid=${source_uuid}&content_uuid=${content_uuid}`);
 
-export { getBookCity, getBookInfo, getBookCityFemale, getBookDetail, getChapterContent };
+const getClassification = () => axios.get(`https://apis.netstart.cn/yunyuedu/simpleCategroy.json`);
+
+const getClassificationType = (catId) => axios.get(`https://apis.netstart.cn/yunyuedu/source/v2/cat.json?catId=${catId}`);
+
+const getClassificationTypeList = (options) => axios.get(`https://apis.netstart.cn/yunyuedu/source/v2/searchBook.json?`, {
+  params: options,
+});
+
+export { getBookCity, getBookInfo, getBookCityFemale, getBookDetail, getChapterContent, getClassification, getClassificationType, getClassificationTypeList };

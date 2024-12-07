@@ -13,6 +13,9 @@ import LoginView from '../views/LoginView.vue'
 import ChartsView from '../views/Charts/ChartView.vue'
 import FemaleChart from '../views/Charts/FemaleChart.vue'
 import MaleChart from '../views/Charts/MaleChart.vue'
+import ClassificationView from '../views/Classification/ClassificationView.vue'
+import FemaleClassification from '../views/Classification/FemaleClassification.vue'
+import MaleClassification from '../views/Classification/MaleClassification.vue'
 
 Vue.use(VueRouter)
 
@@ -29,7 +32,11 @@ const routes = [
   },
   {
     path: "/chart",
-    redirect: '/female-chart',
+    redirect: '/male-chart',
+  },
+  {
+    path: "/classification",
+    redirect: '/male-classification',
   },
   {
     path: '/book-shelf',
@@ -48,6 +55,30 @@ const routes = [
       {
         path: '/male-channel', component: MaleChannelView,
         meta: { showNav: true }
+      },
+    ],
+  },
+  {
+    path: '/chart',
+    component: ChartsView,
+    children: [
+      {
+        path: '/female-chart', component: FemaleChart,
+      },
+      {
+        path: '/male-chart', component: MaleChart,
+      },
+    ],
+  },
+  {
+    path: '/classification',
+    component: ClassificationView,
+    children: [
+      {
+        path: '/female-classification', component: FemaleClassification,
+      },
+      {
+        path: '/male-classification', component: MaleClassification,
       },
     ],
   },
@@ -77,18 +108,8 @@ const routes = [
     path: '/login',
     component: LoginView
   },
-  {
-    path: '/chart',
-    component: ChartsView,
-    children: [
-      {
-        path: '/female-chart', component: FemaleChart,
-      },
-      {
-        path: '/male-chart', component: MaleChart,
-      },
-    ],
-  },
+  
+  
 ]
 
 const router = new VueRouter({
