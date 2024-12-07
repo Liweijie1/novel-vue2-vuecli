@@ -1,5 +1,5 @@
 <template>
-  <div class="benefit">benefit</div>
+  <div class="maleChart">maleChart</div>
 </template>
 
 <script>
@@ -9,7 +9,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.benefit{
-  width: 100vw;
-}
+
 </style>

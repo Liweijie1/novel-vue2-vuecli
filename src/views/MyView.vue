@@ -10,7 +10,7 @@
         </div>
         <div class="right">
           <div class="userName">{{ token }}</div>
-          <div class="userId">ID 873998</div>
+          <div class="userId">ID 87{{token.slice(7)}}</div>
         </div>
       </div>
       <div class="bottom">
@@ -91,6 +91,7 @@ export default {
   padding: 0 12rem;
   box-sizing: border-box;
   background: #f6f7fa;
+ 
   .set {
     height: 45rem;
     display: flex;

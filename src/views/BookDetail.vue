@@ -88,6 +88,7 @@ export default {
       shelf: JSON.parse(localStorage.getItem("shelf")),
       isInShelf: false,
       defaultImg: "/assets/default.png",
+      catalog:null,
     };
   },
   computed: {
@@ -175,11 +176,12 @@ export default {
       }
       this.bookCatalogNum = res.data.data.catalog.length + 1;
       this.bookUpdateTime = this.book.updateTime;
-      if (res.data.data.catalog[0].wordCount) {
-        this.bookFirstChapterId = res.data.data.catalog[0].uuid;
-      } else {
-        this.bookFirstChapterId = res.data.data.catalog[1].uuid;
-      }
+      this.catalog =res.data.data.catalog.filter((o) => {
+        if (o.leaf) {
+          return o;
+        }
+      });
+      this.bookFirstChapterId = this.catalog.find(o => !o.needPay).uuid;
       getChapterContent(this.$route.query.bookId, this.bookFirstChapterId).then(
         (res) => {
           this.bookFirstChapterContent = res.data.data?.content;

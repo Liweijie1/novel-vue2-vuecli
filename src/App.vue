@@ -38,8 +38,10 @@
   </div>
 </template>
 
-<style lang="scss">
-body {
+<style lang="less">
+#app {
+  width: 100vw;
+  overflow: hidden;
   font-size: 16rem;
   .van-tabbar {
     height: 50rem;
@@ -56,7 +58,8 @@ body {
 
   .xxx-enter-active,
   .xxx-leave-active {
-    transition: all 0.5s;
+    position: absolute;
+    transition: all 0.3s;
   }
 
   .xxx-enter {
@@ -91,18 +94,39 @@ export default {
       users: JSON.parse(localStorage.getItem("users")),
       token: JSON.parse(localStorage.getItem("token")),
       shelf: JSON.parse(localStorage.getItem("shelf")),
+      contentStyle: JSON.parse(localStorage.getItem("contentStyle")),
+      routerChangeCount: JSON.parse(localStorage.getItem("contentStyle")),
     };
   },
 
   created() {
     if (!this.users) {
-      localStorage.setItem("users",JSON.stringify(["游客_873998"]));
+      localStorage.setItem("users", JSON.stringify(["游客_87399865"]));
     }
     if (!this.token) {
-      localStorage.setItem("token",JSON.stringify("游客_873998"));
+      localStorage.setItem("token", JSON.stringify("游客_87399865"));
+    }
+    if (!this.routerChangeCount) {
+      localStorage.setItem("routerChangeCount", JSON.stringify(1));
     }
     if (!this.shelf) {
-      localStorage.setItem("shelf",JSON.stringify([{"游客_873998":["bd_750bc41317254264ad384f5234c5bb78_4","ts_02fa18a19aef4d86a890ab864c40493e_4"]}]));
+      localStorage.setItem(
+        "shelf",
+        JSON.stringify([
+          {
+            游客_87399865: [
+              "bd_750bc41317254264ad384f5234c5bb78_4",
+              "ts_02fa18a19aef4d86a890ab864c40493e_4",
+            ],
+          },
+        ])
+      );
+    }
+    if (!this.contentStyle) {
+      localStorage.setItem(
+        "contentStyle",
+        JSON.stringify(["dayTime", "21", "#f7f3f7"])
+      );
     }
   },
 };

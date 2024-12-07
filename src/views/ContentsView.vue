@@ -132,7 +132,11 @@ export default {
   },
   created() {
     getBookInfo(this.$route.query.bookId).then((res) => {
-      this.catalog = res.data.data.catalog;
+      this.catalog = res.data.data.catalog.filter((o) => {
+        if (o.leaf) {
+          return o;
+        }
+      });
       this.catalogTotal = this.catalog.length;
     });
   },

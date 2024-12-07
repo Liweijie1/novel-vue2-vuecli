@@ -1,39 +1,58 @@
 <template>
-  <div class="novelContent">
+  <div class="novelContent" :class="{ night: this.contentTheme == 'night' }">
     <div class="top" v-if="isTopAndBottonShow">
-      <van-image src="/assets/back_lanse.png" @click="$router.back()" />
+      <van-image
+        v-if="this.contentTheme == 'dayTime'"
+        src="/assets/back_lanse.png"
+        @click="back"
+      />
+      <van-image v-else src="/assets/night_back.png" @click="back" />
       <span>{{ bookTitle }}</span>
     </div>
-    <div
-      class="content"
-      v-html="currentCatalogContent"
-      @click="isTopAndBottonShow = !isTopAndBottonShow"
-    ></div>
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <div
+        class="content"
+        v-html="currentCatalogContent"
+        :style="{
+          fontSize: contentFontSize + 'rem',
+          background: contentColor,
+        }"
+        @click="isTopAndBottonShow = !isTopAndBottonShow"
+      ></div>
+    </van-pull-refresh>
     <div class="bottom" v-if="isTopAndBottonShow">
       <div class="text">
         <span @click="prevItem">上一章</span>
         <span @click="nextItem">下一章</span>
       </div>
       <ul class="btn">
-        <li>
-          <van-image src="/assets/chapterlist.png" @click="showPopup" />
+        <li @click="showLeftPopup">
+          <van-image v-if="this.contentTheme == 'dayTime'" src="/assets/chapterlist.png" />
+          <van-image v-else src="/assets/chapterlist_night.png" />
           <span>目录</span>
         </li>
-        <li>
-          <van-image src="/assets/night.png" />
-          <span>夜间</span>
+        <li @click="setTheme">
+          <van-image
+            v-if="this.contentTheme == 'dayTime'"
+            src="/assets/night.png"
+          />
+          <van-image v-else src="/assets/sun.png" />
+          <span v-if="this.contentTheme == 'dayTime'">夜间</span>
+          <span v-else>日间</span>
         </li>
-        <li>
-          <van-image src="/assets/setting.png" />
+        <li @click="showBottomPopup">
+          <van-image v-if="this.contentTheme == 'dayTime'" src="/assets/setting.png" />
+          <van-image v-else src="/assets/setting_night.png" />
           <span>设置</span>
         </li>
         <li>
-          <van-image src="/assets/moremenu.png" />
+          <van-image v-if="this.contentTheme == 'dayTime'" src="/assets/moremenu.png" />
+          <van-image v-else src="/assets/moremenu_setting.png" />
           <span>更多</span>
         </li>
       </ul>
     </div>
-    <van-popup v-model="isLeftShow" position="left">
+    <van-popup class="leftPopup" v-model="isLeftShow" position="left">
       <section class="info">
         <van-image
           class="left"
@@ -70,7 +89,7 @@
             @click="selectRange(range)"
             :class="{ selected: index === selectedRangeIndex }"
           >
-            {{ range.start }} - {{ range.end }}
+            {{ range.start }}-{{ range.end }}
           </li>
         </ul>
       </van-popup>
@@ -79,9 +98,19 @@
           <li
             v-for="number in currentRange"
             :key="number"
-            @click="gotoContentsView(catalog[number - 1].secId)"
+            @click="
+              gotoContentsView(
+                catalog[number - 1].secId,
+                catalog[number - 1].needPay
+              )
+            "
           >
             {{ catalog[number - 1].title }}
+            <van-image
+              class="closeread"
+              src="/assets/closeread.png"
+              v-if="catalog[number - 1].needPay"
+            />
           </li>
         </ul>
         <ul v-else>
@@ -105,6 +134,30 @@
         </ul>
       </div>
     </van-popup>
+    <van-popup
+      class="bottomPopup"
+      v-model="isBottomShow"
+      position="bottom"
+      :overlay-style="{
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+      }"
+    >
+      <div class="contentFontSize">
+        <span>字号</span>
+        <div class="del" @click="contentFontSizeDel">-</div>
+        <div class="num">{{ contentFontSize }}</div>
+        <div class="add" @click="contentFontSizeAdd">+</div>
+        <span>字号大小</span>
+      </div>
+
+      <div class="contentBackground">
+        <span>背景</span>
+        <div @click="setContentColor('#F2F2F2')"></div>
+        <div @click="setContentColor('#D3C2A4')"></div>
+        <div @click="setContentColor('#CEEAD3')"></div>
+        <div @click="setContentColor('#DBC2C9')"></div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -118,6 +171,7 @@ export default {
       catalogId: this.$route.query.catalogId,
       isTopAndBottonShow: false,
       isLeftShow: false,
+      isBottomShow: false,
       currentCatalogContent: null,
       book: null,
       bookCoverImage: null,
@@ -137,7 +191,15 @@ export default {
       activeRangeText: "1-100 V",
       selectedRangeIndex: 0,
       catalogIdList: [],
+      catalogNeedPayList: [],
       currentCatalogIdIndex: 0,
+      routerChangeCount: JSON.parse(localStorage.getItem("routerChangeCount")),
+      isLoading: false,
+      token: JSON.parse(localStorage.getItem("token")),
+      contentStyle: JSON.parse(localStorage.getItem("contentStyle")),
+      contentTheme: "dayTime",
+      contentFontSize: 21,
+      contentColor: "f7f3f7",
     };
   },
   computed: {
@@ -166,6 +228,8 @@ export default {
       this.activeRangeText = "1-" + this.ranges[0].end + "V";
     },
     catalogId() {
+      this.routerChangeCount++;
+      localStorage.setItem("routerChangeCount", JSON.stringify(this.routerChangeCount));
       getChapterContent(this.bookId, this.catalogId).then((res) => {
         if (res.data.successful) {
           this.currentCatalogContent = res.data.data.content;
@@ -176,9 +240,13 @@ export default {
     },
   },
   methods: {
-    showPopup() {
+    showLeftPopup() {
       this.isTopAndBottonShow = false;
       this.isLeftShow = true;
+    },
+    showBottomPopup() {
+      this.isTopAndBottonShow = false;
+      this.isBottomShow = true;
     },
     selectRange(range) {
       this.isSelect = true;
@@ -199,16 +267,36 @@ export default {
     gotoContentsView(id, needPay) {
       if (needPay) {
         Toast("付费内容,请先充值");
+      } else if (id == this.catalogId) {
+        Toast("正在阅读当前章节");
       } else {
         this.catalogId = id;
         this.isLeftShow = false;
+        this.$router.push({
+          push: "/novel-content",
+          query: {
+            bookId: this.bookId,
+            catalogId: this.catalogId,
+          },
+        });
       }
     },
     prevItem() {
       this.currentCatalogIdIndex = this.catalogIdList.indexOf(this.catalogId);
       if (this.currentCatalogIdIndex > 0) {
-        this.currentCatalogIdIndex--;
-        this.catalogId = this.catalogIdList[this.currentCatalogIdIndex];
+        if (!this.catalogNeedPayList[this.currentCatalogIdIndex - 1]) {
+          this.currentCatalogIdIndex--;
+          this.catalogId = this.catalogIdList[this.currentCatalogIdIndex];
+          this.$router.push({
+            push: "/novel-content",
+            query: {
+              bookId: this.bookId,
+              catalogId: this.catalogId,
+            },
+          });
+        } else {
+          Toast("付费内容,请先充值");
+        }
       } else {
         Toast("没有上一章了");
       }
@@ -216,12 +304,58 @@ export default {
     nextItem() {
       this.currentCatalogIdIndex = this.catalogIdList.indexOf(this.catalogId);
       if (this.currentCatalogIdIndex < this.catalogIdList.length - 1) {
-        this.currentCatalogIdIndex++;
-        this.catalogId = this.catalogIdList[this.currentCatalogIdIndex];
+        if (!this.catalogNeedPayList[this.currentCatalogIdIndex + 1]) {
+          this.currentCatalogIdIndex++;
+          this.catalogId = this.catalogIdList[this.currentCatalogIdIndex];
+          this.$router.push({
+            push: "/novel-content",
+            query: {
+              bookId: this.bookId,
+              catalogId: this.catalogId,
+            },
+          });
+        } else {
+          Toast("付费内容,请先充值");
+        }
       } else {
-        Toast("付费内容,请先充值");
+        Toast("已经是最新章节了");
       }
     },
+    back() {
+      this.$router.go(-this.routerChangeCount);
+      this.routerChangeCount = 1
+      localStorage.setItem("routerChangeCount", JSON.stringify(this.routerChangeCount));
+    },
+    onRefresh() {
+      this.prevItem();
+      this.isLoading = false;
+    },
+    refashContentStyle() {
+      this.contentStyle = JSON.parse(localStorage.getItem("contentStyle"));
+      this.contentTheme = this.contentStyle[0];
+      this.contentFontSize = this.contentStyle[1];
+      this.contentColor = this.contentStyle[2];
+    },
+    setTheme() {
+      if (this.contentTheme == "dayTime") {
+        this.contentTheme = "night";
+      } else {
+        this.contentTheme = "dayTime";
+      }
+      localStorage.setItem("contentStyle", JSON.stringify([this.contentTheme,this.contentFontSize,this.contentColor]));
+    },
+    contentFontSizeAdd(){
+      this.contentFontSize++
+      localStorage.setItem("contentStyle", JSON.stringify([this.contentTheme,this.contentFontSize,this.contentColor]));
+    },
+    contentFontSizeDel(){
+      this.contentFontSize--
+      localStorage.setItem("contentStyle", JSON.stringify([this.contentTheme,this.contentFontSize,this.contentColor]));
+    },
+    setContentColor(color){
+      this.contentColor = color
+      localStorage.setItem("contentStyle", JSON.stringify([this.contentTheme,this.contentFontSize,this.contentColor]));
+    }
   },
   created() {
     getChapterContent(this.bookId, this.catalogId).then((res) => {
@@ -231,17 +365,30 @@ export default {
         this.currentCatalogContent = "<h1>付费章节,请充值</h1>";
       }
     });
-
+    
     getBookInfo(this.bookId).then((res) => {
       this.book = res.data.data.book;
       this.bookCoverImage = this.book.coverImage;
       this.bookTitle = this.book.title;
       this.bookAuthor = this.book.author;
       this.bookCatalogNum = res.data.data.catalog.length + 1;
-      this.catalog = res.data.data.catalog;
+      this.catalog = res.data.data.catalog.filter((o) => {
+        if (o.leaf) {
+          return o;
+        }
+      });
       this.catalogTotal = this.catalog.length;
-      this.catalogIdList = this.catalog.map((o) => o.secId);
+      this.catalogIdList = this.catalog.map((o) => {
+        return o.secId;
+      });
+      this.catalogNeedPayList = this.catalog.map((o) => {
+        return o.needPay;
+      });
     });
+  
+    this.refashContentStyle();
+
+
   },
 };
 </script>
@@ -249,7 +396,7 @@ export default {
 <style lang="less">
 .novelContent {
   width: 100vw;
-  position: relative;
+  height: 100%;
   .top {
     width: 100vw;
     height: 55rem;
@@ -257,6 +404,8 @@ export default {
     display: flex;
     align-items: center;
     position: fixed;
+    top: 0;
+    z-index: 2;
     .van-image {
       width: 8rem;
       height: 16rem;
@@ -269,27 +418,31 @@ export default {
     }
   }
   .content {
+    width: 100vw;
     padding-top: 55rem;
-    background: #f7f3f7;
+    font-size: 21rem;
+
     h1 {
-      font-size: 24rem;
+      font-size: 1.2em;
       text-align: center;
     }
     p {
       color: #313431;
-      font-size: 21rem;
       text-indent: 2em;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
     }
   }
   .bottom {
-    width: 100%;
+    width: 100vw;
     height: 132rem;
     background: white;
     position: fixed;
     bottom: 0;
 
     .text {
-      width: 100%;
+      width: 100vw;
       height: 60rem;
       padding: 0 18rem;
       box-sizing: border-box;
@@ -301,7 +454,7 @@ export default {
     }
 
     .btn {
-      width: 100%;
+      width: 100vw;
       height: 72rem;
       display: flex;
       justify-content: space-around;
@@ -323,7 +476,7 @@ export default {
       }
     }
   }
-  .van-popup {
+  .leftPopup {
     width: 312rem;
     height: 100vh;
     position: fixed;
@@ -360,6 +513,28 @@ export default {
       align-items: center;
     }
 
+    .catalogListBox {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+
+      .catalogList {
+        width: 85rem;
+        height: 28rem;
+        line-height: 28rem;
+        border-radius: 5rem;
+        font-size: 12rem;
+        text-align: center;
+        color: #6e6e6e;
+        background: #f6f7fa;
+        margin-top: 12rem;
+        &.selected {
+          color: white;
+          background: #0096ff;
+        }
+      }
+    }
     .contents {
       ul {
         li {
@@ -376,7 +551,7 @@ export default {
       }
     }
 
-    .van-popup {
+    .leftPopup {
       .catalogListBox {
         width: 100%;
         display: flex;
@@ -398,6 +573,93 @@ export default {
           }
         }
       }
+    }
+  }
+  .bottomPopup {
+    width: 100vw;
+    height: 200rem;
+    background: white;
+    .contentFontSize {
+      width: 100vw;
+      height: 30rem;
+      margin: 10rem 0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      span {
+        font-size: 12rem;
+        &:first-child {
+          color: #000;
+        }
+        &:last-of-type {
+          color: #adadaf;
+        }
+      }
+      .del,
+      .add {
+        width: 88rem;
+        height: 28rem;
+        background: #e0e0e0;
+        border-radius: 5rem;
+        text-align: center;
+        line-height: 28rem;
+      }
+      .num {
+        width: 56rem;
+        height: 28rem;
+        text-align: center;
+        line-height: 28rem;
+      }
+    }
+    .contentBackground {
+      width: 100vw;
+      height: 55rem;
+      display: flex;
+      align-items: center;
+      span {
+        margin-left: 10rem;
+        font-size: 12rem;
+      }
+      div {
+        width: 38rem;
+        height: 38rem;
+        border-radius: 50%;
+        margin-left: 30rem;
+        &:nth-child(2) {
+          background: #f2f2f2;
+        }
+        &:nth-child(3) {
+          background: #d3c2a4;
+        }
+        &:nth-child(4) {
+          background: #ceead3;
+        }
+        &:nth-child(5) {
+          background: #dbc2c9;
+        }
+      }
+    }
+  }
+
+  &.night {
+    .top {
+      color: #adadaf;
+      background: #333333;
+    }
+    .content {
+      color: #adadaf;
+      background: #000 !important;
+      p {
+        color: #adadaf;
+        background: #000;
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+      }
+    }
+    .bottom {
+      color: #adadaf;
+      background: #333333;
     }
   }
 }

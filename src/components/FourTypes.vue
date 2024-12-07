@@ -1,26 +1,45 @@
 <template>
   <div class="fourTypes">
     <div class="type">
-      <van-image src="/assets/icon_city_ranking.png"  fit="cover"/>
+      <van-image
+        src="/assets/icon_city_ranking.png"
+        @click="gotoCharts"
+        fit="cover"
+      />
       <div>榜单</div>
     </div>
     <div class="type">
-      <van-image src="/assets/icon_city_update.png"  fit="cover"/>
+      <van-image src="/assets/icon_city_update.png" fit="cover" />
       <div>完结</div>
     </div>
     <div class="type">
-      <van-image src="/assets/icon_city_finish.png"  fit="cover"/>
+      <van-image src="/assets/icon_city_finish.png" fit="cover" />
       <div>连载</div>
     </div>
     <div class="type">
-      <van-image src="/assets/icon_city_library.png"  fit="cover"/>
+      <van-image src="/assets/icon_city_library.png" fit="cover" />
       <div>书库</div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props:["male"],
+  methods: {
+    gotoCharts() {
+      if (this.male) {
+        this.$router.push({
+          path: "/male-chart",
+        });
+      }else{
+        this.$router.push({
+          path: "/female-chart",
+        });
+      }
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

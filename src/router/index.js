@@ -10,6 +10,9 @@ import MyView from '../views/MyView.vue'
 import NovelContentView from '../views/NovelContentView.vue'
 import ContentsView from '../views/ContentsView.vue'
 import LoginView from '../views/LoginView.vue'
+import ChartsView from '../views/Charts/ChartView.vue'
+import FemaleChart from '../views/Charts/FemaleChart.vue'
+import MaleChart from '../views/Charts/MaleChart.vue'
 
 Vue.use(VueRouter)
 
@@ -23,6 +26,10 @@ const routes = [
     path: "/book-city",
     redirect: '/male-channel',
     meta: { showNav: true }
+  },
+  {
+    path: "/chart",
+    redirect: '/female-chart',
   },
   {
     path: '/book-shelf',
@@ -69,6 +76,18 @@ const routes = [
   {
     path: '/login',
     component: LoginView
+  },
+  {
+    path: '/chart',
+    component: ChartsView,
+    children: [
+      {
+        path: '/female-chart', component: FemaleChart,
+      },
+      {
+        path: '/male-chart', component: MaleChart,
+      },
+    ],
   },
 ]
 

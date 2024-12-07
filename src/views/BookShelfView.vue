@@ -81,7 +81,7 @@ export default {
 .bookShelf {
   width: 100vw;
   min-height: 100vh;
-  padding-bottom: 50rem;
+  padding: 50rem 0;
   background-color: #f7f7f7;
   header {
     width: 100%;
@@ -89,6 +89,9 @@ export default {
     background: white;
     display: flex;
     align-items: center;
+    position: fixed;
+    top: 0;
+    z-index: 2;
     .box {
       width: 25rem;
       height: 25rem;

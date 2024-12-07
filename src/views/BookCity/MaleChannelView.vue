@@ -11,7 +11,7 @@
       </van-swipe-item>
     </van-swipe>
 
-    <FourTypes></FourTypes>
+    <FourTypes :male="male"></FourTypes>
 
     <TabBar>
       <template #left>畅销佳作</template>

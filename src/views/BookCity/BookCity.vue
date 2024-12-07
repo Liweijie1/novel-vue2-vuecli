@@ -19,12 +19,19 @@ export default {};
 
 <style lang="scss" scoped>
 .bookCity {
+  width: 100vw;
   margin-bottom: 60px;
+  padding-top: 50rem;
   header {
+    width: 100vw;
     height: 50rem;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    background: white;
+    position: fixed;
+    top: 0;
+    z-index: 2;
     .man,
     .woman {
       font-size: 18rem;
