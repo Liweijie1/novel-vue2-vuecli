@@ -20,7 +20,7 @@
         </div>
         <div class="line"></div>
         <div class="item">
-          <div>110</div>
+          <div>{{bookCoupons}}</div>
           <span>我的书劵</span>
         </div>
       </div>
@@ -34,8 +34,8 @@
         <van-image src="/assets/icon_pay_history.png" />
         <span>消费记录</span>
       </div>
-      <div class="item">
-        <van-image src="/assets/icon_history.png" />
+      <div class="item"  @click="$router.push({path:'/read-history'})">
+        <van-image src="/assets/icon_history.png"/>
         <span>阅读历史</span>
       </div>
       <div class="item">
@@ -69,11 +69,15 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
       token: JSON.parse(localStorage.getItem("token")),
     };
+  },
+  computed: {
+    ...mapState(["bookCoupons"]),
   },
   methods: {
     gotoLogin() {

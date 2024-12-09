@@ -56,8 +56,8 @@ import { Toast } from "vant";
 export default {
   data() {
     return {
-      phone: "12345678911",
-      code: "1234",
+      phone: "",
+      code: "",
       isActive: false,
       checkBoxVal: true,
       show: false,

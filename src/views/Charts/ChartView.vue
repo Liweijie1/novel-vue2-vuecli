@@ -9,7 +9,7 @@
         />
       </template>
       <template #right>
-        <van-image class="search" src="/assets/icon_search.png" />
+        <van-image class="search" src="/assets/icon_search.png"  @click="gotoSearch"/>
       </template>
     </van-nav-bar>
     <nav class="toggleChart">
@@ -31,6 +31,11 @@ export default {
         path: "/male-channel",
       });
     },
+    gotoSearch(){
+      this.$router.push({
+        path:"/search"
+      })
+    }
   },
 };
 </script>

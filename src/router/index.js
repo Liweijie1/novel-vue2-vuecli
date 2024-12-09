@@ -16,6 +16,9 @@ import MaleChart from '../views/Charts/MaleChart.vue'
 import ClassificationView from '../views/Classification/ClassificationView.vue'
 import FemaleClassification from '../views/Classification/FemaleClassification.vue'
 import MaleClassification from '../views/Classification/MaleClassification.vue'
+import SearchView from '../views/SearchView.vue'
+import BookListView from '../views/BookListView.vue'
+import ReadHistory from '../views/ReadHistory.vue'
 
 Vue.use(VueRouter)
 
@@ -107,6 +110,18 @@ const routes = [
   {
     path: '/login',
     component: LoginView
+  },
+  {
+    path: '/search',
+    component: SearchView
+  },
+  {
+    path: '/book-list',
+    component: BookListView
+  },
+  {
+    path: '/read-history',
+    component: ReadHistory
   },
   
   

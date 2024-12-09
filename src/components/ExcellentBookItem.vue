@@ -38,6 +38,7 @@ export default {
           bookId: this.bookId,
         },
       });
+      console.log(123);
     },
     handleError() {
       this.imgUrl = this.defaultImg;

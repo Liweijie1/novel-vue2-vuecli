@@ -1,48 +1,59 @@
 <template>
   <div class="maleClassification">
-    <ul class="cateName">
-      <li
-        :class="{ active: myfilter.catId == item.cateId }"
-        v-for="item in cates"
-        :key="item.catId"
-        @click="myfilter = { ...myfilter, catId: item.cateId }"
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+        :immediate-check="false"
       >
-        {{ item.cateName }}
-      </li>
-    </ul>
-    <ul class="bookStatus">
-      <li
-        :class="{ active: myfilter.bookStatus == 0 }"
-        @click="myfilter = { ...myfilter, bookStatus: 0 }"
-      >
-        全部
-      </li>
-      <li
-        :class="{ active: myfilter.bookStatus == 1 }"
-        @click="myfilter = { ...myfilter, bookStatus: 1 }"
-      >
-        连载
-      </li>
-      <li
-        :class="{ active: myfilter.bookStatus == 2 }"
-        @click="myfilter = { ...myfilter, bookStatus: 2 }"
-      >
-        完结
-      </li>
-    </ul>
-    <ExcellentBookItem
-      v-for="item in books"
-      :key="item.id"
-      :bookId="item.id"
-      :img="item.cover"
-      :title="item.title"
-      :content="item.content"
-      :author="item.author"
-    ></ExcellentBookItem>
+        <ul class="cateName">
+          <li
+            :class="{ active: myfilter.catId == item.cateId }"
+            v-for="item in cates"
+            :key="item.catId"
+            @click="myfilter = { ...myfilter, catId: item.cateId }"
+          >
+            {{ item.cateName }}
+          </li>
+        </ul>
+        <ul class="bookStatus">
+          <li
+            :class="{ active: myfilter.bookStatus == 0 }"
+            @click="myfilter = { ...myfilter, bookStatus: 0 }"
+          >
+            全部
+          </li>
+          <li
+            :class="{ active: myfilter.bookStatus == 1 }"
+            @click="myfilter = { ...myfilter, bookStatus: 1 }"
+          >
+            连载
+          </li>
+          <li
+            :class="{ active: myfilter.bookStatus == 2 }"
+            @click="myfilter = { ...myfilter, bookStatus: 2 }"
+          >
+            完结
+          </li>
+        </ul>
+        <ExcellentBookItem
+          v-for="item in books"
+          :key="item.id"
+          :bookId="item.id"
+          :img="item.cover"
+          :title="item.title"
+          :content="item.content"
+          :author="item.author"
+        ></ExcellentBookItem>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
+import { Toast } from "vant";
 import ExcellentBookItem from "@/components/ExcellentBookItem.vue";
 import { getClassification, getClassificationTypeList } from "@/api/index.js";
 export default {
@@ -54,25 +65,74 @@ export default {
       cateName: null,
       page: Number(page),
       myfilter: { catId, bookStatus, page },
-      finished: false,
       books: [],
+      loading: false,
+      finished: false,
+      myloading: false,
+      isLoading: false,
     };
   },
   components: {
     ExcellentBookItem,
   },
+  computed: {
+    query: function () {
+      return { ...this.myfilter, page: this.page };
+    },
+  },
   methods: {
     getBookReplace(options) {
-      this.p = 1;
+      this.page = 1;
       this.finished = false;
       return getClassificationTypeList(options).then((res) => {
         this.books = res.data.list;
+      });
+    },
+    getBookApiPush(options) {
+      return getClassificationTypeList(options).then((res) => {
+        this.books = [...this.books, ...res.data.list];
+        this.loading = false;
+        this.myloading = false;
+        if (res.data.list.length == 0) {
+          this.finished = true;
+        }
+      });
+    },
+    onLoad() {
+      if (this.page > 4) {
+        this.finished = true;
+      } else {
+        if (!this.myloading && !this.finished) {
+          this.myloading = true;
+          this.page++;
+          this.getBookApiPush({
+            ...this.myfilter,
+            page: this.page,
+          });
+        }
+      }
+    },
+    onRefresh() {
+      this.isLoading = false;
+      this.getBookReplace(this.myfilter).then(() => {
+        Toast("刷新成功");
       });
     },
   },
   watch: {
     myfilter: function (f) {
       this.getBookReplace(f);
+    },
+    query: function (query, old) {
+      if (
+        new URLSearchParams(query).toString() !==
+        new URLSearchParams(old).toString()
+      ) {
+        this.$router.replace({
+          path: "/male-classification",
+          query,
+        });
+      }
     },
   },
   created() {

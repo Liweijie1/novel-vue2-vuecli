@@ -94,6 +94,7 @@ export default {
       users: JSON.parse(localStorage.getItem("users")),
       token: JSON.parse(localStorage.getItem("token")),
       shelf: JSON.parse(localStorage.getItem("shelf")),
+      readHistory: JSON.parse(localStorage.getItem("readHistory")),
       contentStyle: JSON.parse(localStorage.getItem("contentStyle")),
       routerChangeCount: JSON.parse(localStorage.getItem("contentStyle")),
     };
@@ -108,6 +109,9 @@ export default {
     }
     if (!this.routerChangeCount) {
       localStorage.setItem("routerChangeCount", JSON.stringify(1));
+    }
+    if (!this.readHistory) {
+      localStorage.setItem("readHistory", JSON.stringify([]));
     }
     if (!this.shelf) {
       localStorage.setItem(

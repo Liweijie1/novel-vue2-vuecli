@@ -98,6 +98,7 @@
           <li
             v-for="number in currentRange"
             :key="number"
+            :class="{active: catalog[number - 1].secId == catalogId}"
             @click="
               gotoContentsView(
                 catalog[number - 1].secId,
@@ -117,6 +118,7 @@
           <li
             v-for="number in defaultRange"
             :key="number"
+            :class="{active: catalog[number - 1].secId == catalogId}"
             @click="
               gotoContentsView(
                 catalog[number - 1].secId,
@@ -200,6 +202,7 @@ export default {
       contentTheme: "dayTime",
       contentFontSize: 21,
       contentColor: "f7f3f7",
+      readHistory: JSON.parse(localStorage.getItem("readHistory")),
     };
   },
   computed: {
@@ -388,7 +391,13 @@ export default {
   
     this.refashContentStyle();
 
-
+    if (!this.readHistory.includes(this.bookId)) {
+        this.readHistory.push(this.bookId);
+        localStorage.setItem(
+          "readHistory",
+          JSON.stringify(this.readHistory)
+        );
+      }
   },
 };
 </script>
@@ -429,6 +438,8 @@ export default {
     p {
       color: #313431;
       text-indent: 2em;
+      padding: 0 14rem;
+      box-sizing: border-box;
       &:last-of-type {
         margin-bottom: 0;
       }
@@ -546,6 +557,9 @@ export default {
             height: 14rem;
             position: absolute;
             right: 10rem;
+          }
+          &.active{
+            color: #ADADAD;
           }
         }
       }

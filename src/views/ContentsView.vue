@@ -30,9 +30,19 @@
         <li
           v-for="number in currentRange"
           :key="number"
-          @click="gotoContentsView(catalog[number - 1].secId)"
+          @click="
+            gotoContentsView(
+              catalog[number - 1].secId,
+              catalog[number - 1].needPay
+            )
+          "
         >
           {{ catalog[number - 1].title }}
+          <van-image
+            class="closeread"
+            src="/assets/closeread.png"
+            v-if="catalog[number - 1].needPay"
+          />
         </li>
       </ul>
       <ul v-else>
@@ -59,7 +69,7 @@
 </template>
 
 <script>
-import { Toast } from 'vant';
+import { Toast } from "vant";
 import { getBookInfo } from "@/api/index.js";
 export default {
   data() {
@@ -118,7 +128,7 @@ export default {
     },
     gotoContentsView(id, needPay) {
       if (needPay) {
-        Toast('付费内容,请先充值');
+        Toast("付费内容,请先充值");
       } else {
         this.$router.push({
           path: "/novel-content",

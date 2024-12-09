@@ -8,11 +8,11 @@
         <van-image src="/assets/icon_home_top_right.png" />
       </div>
       <van-image class="book" src="/assets/icon_read_history.png" />
-      <van-image class="magnifier" src="/assets/icon_search.png" />
+      <van-image class="magnifier" src="/assets/icon_search.png"  @click="gotoSearch"/>
     </header>
 
     <van-swipe class="my-swipe" :autoplay="30000" indicator-color="white">
-      <van-swipe-item v-for="item in swipeList" :key="item.id">
+      <van-swipe-item v-for="item in swipeList" :key="item.id" @click="gotoBookDetail(item.id)">
         <van-image :src="item.cover" />
         <div class="text">
           <div class="bookName van-ellipsis">{{ item.title }}</div>
@@ -57,6 +57,19 @@ export default {
     ShelfBookItem,
   },
   methods: {
+    gotoBookDetail(id) {
+      this.$router.push({
+        path: "/book-detail",
+        query: {
+          bookId: id,
+        },
+      });
+    },
+    gotoSearch(){
+      this.$router.push({
+        path:"/search"
+      })
+    },
     refash() {
       this.shelf=JSON.parse(localStorage.getItem("shelf"))
       const userShelf = this.shelf.find((obj) => {

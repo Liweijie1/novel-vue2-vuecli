@@ -14,6 +14,13 @@
     <FourTypes :male="male"></FourTypes>
 
     <TabBar>
+      <template #left>本周红文</template>
+      <template #right>更多 ></template>
+    </TabBar>
+
+    <NovelExpress :novelExpress="novelExpress"></NovelExpress>
+
+    <TabBar>
       <template #left>畅销佳作</template>
       <template #right>更多 ></template>
     </TabBar>
@@ -21,14 +28,7 @@
     <BestSelling :bestSelling="bestSelling"></BestSelling>
 
     <MostPopular :mostPopular="mostPopular" :male="male"></MostPopular>
-
-    <TabBar>
-      <template #left>小说速递</template>
-      <template #right>更多 ></template>
-    </TabBar>
-
-    <NovelExpress :novelExpress="novelExpress"></NovelExpress>
-
+    
     <TabBar>
       <template #left>极品好书</template>
       <template #right>更多 ></template>

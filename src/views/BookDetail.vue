@@ -1,5 +1,6 @@
 <template>
   <div class="bookDetail" v-if="book">
+    <van-skeleton title :row="3" v-if="loading" />
     <div
       class="bg"
       :style="{ 'background-image': `url(${bookCoverImage})` }"
@@ -18,8 +19,11 @@
       />
       <div class="right">
         <div class="bookTitle van-ellipsis">{{ bookTitle }}</div>
+        <div class="bookLead van-ellipsis">主角：</div>
         <div class="bookAuthor van-ellipsis">作者：{{ bookAuthor }}</div>
-        <div class="bookTotalCount van-ellipsis">{{ bookTotalCount }}万字</div>
+        <div class="bookTotalCount van-ellipsis">
+          连载至 {{ bookTotalCount }}万字
+        </div>
       </div>
     </section>
 
@@ -88,7 +92,8 @@ export default {
       shelf: JSON.parse(localStorage.getItem("shelf")),
       isInShelf: false,
       defaultImg: "/assets/default.png",
-      catalog:null,
+      catalog: null,
+      loading: true,
     };
   },
   computed: {
@@ -165,7 +170,9 @@ export default {
     },
   },
   created() {
+
     getBookInfo(this.$route.query.bookId).then((res) => {
+      this.loading = false;
       this.book = res.data.data.book;
       this.bookCoverImage = this.book.coverImage;
       this.bookTitle = this.book.title;
@@ -176,12 +183,13 @@ export default {
       }
       this.bookCatalogNum = res.data.data.catalog.length + 1;
       this.bookUpdateTime = this.book.updateTime;
-      this.catalog =res.data.data.catalog.filter((o) => {
+      this.catalog = res.data.data.catalog.filter((o) => {
         if (o.leaf) {
           return o;
         }
       });
-      this.bookFirstChapterId = this.catalog.find(o => !o.needPay).uuid;
+      this.bookFirstChapterId = this.catalog.find((o) => !o.needPay).uuid;
+
       getChapterContent(this.$route.query.bookId, this.bookFirstChapterId).then(
         (res) => {
           this.bookFirstChapterContent = res.data.data?.content;
@@ -244,6 +252,24 @@ export default {
     .right {
       display: flex;
       flex-direction: column;
+      color: white;
+      margin-left: 16rem;
+      .bookTitle {
+        font-size: 16rem;
+        margin-top: 6rem;
+      }
+      .bookLead {
+        margin-top: 28rem;
+        font-size: 14rem;
+      }
+      .bookAuthor {
+        margin-top: 16rem;
+        font-size: 14rem;
+      }
+      .bookTotalCount {
+        margin-top: 12rem;
+        font-size: 14rem;
+      }
     }
   }
 

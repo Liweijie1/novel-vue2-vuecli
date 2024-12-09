@@ -33,7 +33,7 @@
 <script>
 import ClassificationItem from "@/components/ClassificationItem.vue";
 import ExcellentBookItem from "@/components/ExcellentBookItem.vue";
-import { getBookCityFemale, getClassification } from "@/api/index.js";
+import { getBookCity, getClassification } from "@/api/index.js";
 export default {
   data() {
     return {
@@ -49,7 +49,7 @@ export default {
     ClassificationItem,
   },
   created() {
-    getBookCityFemale().then((res) => {
+    getBookCity().then((res) => {
       this.bookCityData = res.data.list;
       this.mostPopular = this.bookCityData.slice(5, 13);
     });

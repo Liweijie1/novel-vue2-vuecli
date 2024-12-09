@@ -55,6 +55,7 @@ export default {
     div {
       font-size: 14px;
       color: #666666;
+      text-align: center;
     }
   }
 }

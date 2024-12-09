@@ -18,4 +18,6 @@ const getClassificationTypeList = (options) => axios.get(`https://apis.netstart.
   params: options,
 });
 
-export { getBookCity, getBookInfo, getBookCityFemale, getBookDetail, getChapterContent, getClassification, getClassificationType, getClassificationTypeList };
+const getSearch = (keyword) => axios.get(`https://apis.netstart.cn/yunyuedu/search/book.json?keyword=${keyword}`);
+
+export { getBookCity, getBookInfo, getBookCityFemale, getBookDetail, getChapterContent, getClassification, getClassificationType, getClassificationTypeList, getSearch };
